@@ -4,10 +4,48 @@ def git_credentials = 'github.Lakhtenkov-iv'
 def branch = 'master'
 def timestamp = new Date().format( 'dd-MM-yyyy_HH-mm' )
 def state = 'SUCCESS'
+current_stage = null
+
+
+def mail() {
+    def causes = currentBuild.rawBuild.getCauses()
+
+    if (!causes.isEmpty()) {
+        cause = causes[0].getShortDescription()
+    }
+    
+    causes = null
+    log = currentBuild.rawBuild.getLog(40).join('\n')
+    def body = """
+                    <p>Build $env.BUILD_NUMBER ran on $env.NODE_NAME and ended with $currentBuild.result .
+                    </p>
+                    <p><b>Build trigger</b>: $cause</p>
+                    <p><b> Check response code</b>: $response </p>
+                    <p>See: <a href="$env.BUILD_URL">$env.BUILD_URL</a></p>
+                """
+    if  (currentBuild.result != 'SUCCESS') {
+        body = body + """
+            <p><b>Failed on stage</b>: $current_stage</p>
+            <h2>Last lines of output:</h2>
+            <pre>$log</pre>
+        """
+    }
+    
+    emailext attachLog: true, body: body ,
+                    compressLog: true, 
+                    subject: "$env.JOB_NAME $env.BUILD_NUMBER: $currentBuild.result",
+                    to: emailextrecipients([[$class: 'UpstreamComitterRecipientProvider'],
+                                            [$class: 'FailingTestSuspectsRecipientProvider'],
+                                            [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
+                                            [$class: 'CulpritsRecipientProvider'],
+                                            [$class: 'DevelopersRecipientProvider'], 
+                                            [$class: 'RequesterRecipientProvider']])   
+}
 
 node{
 	try {
 		stage('PREPARATION') {
+			current_stage = 'PREPARATION'
 			try {
 				step([$class: 'WsCleanup'])
 				git url: "https://${backupRepository}", credentialsId: 'github.Lakhtenkov-iv', branch: branch
@@ -18,6 +56,7 @@ node{
 			}
 		}
 		stage('BACKUP'){
+			current_stage = 'BACKUP'
 			try {
 				sh """
 					cd ${env.JENKINS_HOME}
@@ -37,6 +76,7 @@ node{
 			}
 		}
 		stage ('PUSH TO REPOSITORY'){
+			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				sh "git add jenkins_backup_${timestamp}.tar.gz; git commit -m 'test'"
 				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
@@ -59,7 +99,9 @@ node{
 		throw error
 	}
 	finally {
-		println ("Build finished")
-		
+		if (!currentBuild.result){
+            currentBuild.result=state
+        }
+		mail()
 	}
 }
