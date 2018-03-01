@@ -31,7 +31,7 @@ def mail() {
         """
     }
     
-    emailext attachLog: true, body: body ,
+    /*emailext attachLog: true, body: body ,
                     compressLog: true, 
                     subject: "$env.JOB_NAME $env.BUILD_NUMBER: $currentBuild.result",
                     /*to: emailextrecipients([[$class: 'UpstreamComitterRecipientProvider'],
@@ -39,8 +39,8 @@ def mail() {
                                             [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
                                             [$class: 'CulpritsRecipientProvider'],
                                             [$class: 'DevelopersRecipientProvider'], 
-                                            [$class: 'RequesterRecipientProvider']])*/
-					to: emailextrecipients('lakhtenkov@gmail.com')
+                                            [$class: 'RequesterRecipientProvider']])
+					to: emailextrecipients('lakhtenkov@gmail.com')*/
 }
 
 node{
