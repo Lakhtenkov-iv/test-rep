@@ -8,7 +8,8 @@ def current_stage = null
 
 
 def mail() {
-	def body = null
+	def body = 
+	
     def causes = currentBuild.rawBuild.getCauses()
 
     if (!causes.isEmpty()) {
@@ -17,7 +18,7 @@ def mail() {
     
     causes = null
     def log = currentBuild.rawBuild.getLog(40).join('\n')
-	
+	/*
     body = """
                     <p>Build $env.BUILD_NUMBER ran on $env.NODE_NAME and ended with $currentBuild.result .
                     </p>
@@ -25,14 +26,17 @@ def mail() {
                     <p><b> Check response code</b>: $response </p>
                     <p>See: <a href="$env.BUILD_URL">$env.BUILD_URL</a></p>
                 """
-	/*
+	*/
     if  (currentBuild.result != 'SUCCESS') {
-        body = body + """
+        /*body = body + """
             <p><b>Failed on stage</b>: $current_stage</p>
             <h2>Last lines of output:</h2>
             <pre>$log</pre>
-        """
-    }*/
+        """*/
+		body = body + """ 
+		<p><b>Failed on stage</b>: $current_stage</p>
+		"""
+    }
 
     emailext attachLog: true, body: body ,
                     compressLog: true, 
