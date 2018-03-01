@@ -1,7 +1,7 @@
 
 def backupRepository = 'github.com/Lakhtenkov-iv/test-rep.git'
 def branch = 'master'
-def timestamp = new Date().format( 'ddMMyyyy' )
+def timestamp = new Date().format( 'ddMMyyyy-HH:mm' )
 def state = 'SUCCESS'
 
 node{
