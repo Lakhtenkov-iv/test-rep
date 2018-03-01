@@ -9,14 +9,14 @@ def current_stage = null
 
 def mail() {
 	def body = null
-    def causes = currentBuild.rawBuild.getCauses()
+    /*def causes = currentBuild.rawBuild.getCauses()
 
     if (!causes.isEmpty()) {
         cause = causes[0].getShortDescription()
     }
     
     causes = null
-    //def log = currentBuild.rawBuild.getLog(40).join('\n')
+    def log = currentBuild.rawBuild.getLog(40).join('\n')
     body = """
                     <p>Build $env.BUILD_NUMBER ran on $env.NODE_NAME and ended with $currentBuild.result .
                     </p>
@@ -30,7 +30,7 @@ def mail() {
             <h2>Last lines of output:</h2>
             <pre>$log</pre>
         """
-    }
+    }*/
 
     emailext attachLog: true, body: body ,
                     compressLog: true, 
@@ -66,7 +66,7 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
+					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
 					du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
