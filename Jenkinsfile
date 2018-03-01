@@ -1,5 +1,5 @@
 
-def backupRepository = 'https://github.com/Lakhtenkov-iv/test-rep.git'
+def backupRepository = 'github.com/Lakhtenkov-iv/test-rep.git'
 def branch = 'master'
 def state = 'SUCCESS'
 
@@ -8,7 +8,7 @@ node{
 		stage('PREPARATION') {
 			try {
 				step([$class: 'WsCleanup'])
-				git url: backupRepository, credentialsId: 'github.Lakhtenkov-iv', branch: branch
+				git url: "https://${backupRepository}", credentialsId: 'github.Lakhtenkov-iv', branch: branch
 			}
 			catch (Exception error){
 				println ("PREPARATION Failed")
@@ -35,10 +35,14 @@ node{
 		}
 		stage ('PUSH TO REPOSITORY'){
 			try {
-				//gitPublisher branchesToPush: [[branchName: 'master']], credentialsId: 'cred.master.builder', url: backupRepository
-				//gitPublisher branchesToPush: [[branchName: 'master']], credentialsId: 'github.Lakhtenkov-iv', url: backupRepository
 				println ("Push stage")
-				
+				sh 'git tag -a ${env.BUILD_NUMBER} -m "backup ${env.BUILD_NUMBER}"'
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
+					credentialsId: 'MyID', 
+					usernameVariable: 'GIT_USERNAME', 
+					passwordVariable: 'GIT_PASSWORD']]) {    
+						sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags')
+				}
 			}
 			catch (Exception e){
 				state ='FAILURE'
