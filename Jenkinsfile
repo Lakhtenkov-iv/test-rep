@@ -1,6 +1,7 @@
 
 def backupRepository = 'github.com/Lakhtenkov-iv/test-rep.git'
 def branch = 'master'
+def timestamp = new Date().format( 'ddMMyyyy' )
 def state = 'SUCCESS'
 
 node{
@@ -24,7 +25,7 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_\$(date "+%F--%H-%M").tar.gz ./*
+					tar --exclude='./plugins/*' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
 				"""
 			}
 			catch (Exception e){
@@ -36,7 +37,7 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			try {
 				println ("Push stage")
-				sh "git tag -a ${env.BUILD_NUMBER} -m 'backup ${env.BUILD_NUMBER}'"
+				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
 					credentialsId: 'github.Lakhtenkov-iv', 
 					usernameVariable: 'GIT_USERNAME', 
