@@ -106,5 +106,6 @@ node{
 		if  (currentBuild.result != 'SUCCESS') {
 			mail()
 		}
+		mail()
 	}
 }
