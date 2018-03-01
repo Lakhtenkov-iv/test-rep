@@ -38,6 +38,7 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			try {
 				println ("Push stage")
+                                sh "git add jenkins_backup_${timestamp}.tar.gz; git commit -m 'test'"
 				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
 					credentialsId: 'github.Lakhtenkov-iv', 
