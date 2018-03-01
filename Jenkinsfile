@@ -4,7 +4,7 @@ def git_credentials = 'github.Lakhtenkov-iv'
 def branch = 'master'
 def timestamp = new Date().format( 'dd-MM-yyyy_HH-mm' )
 def state = 'SUCCESS'
-current_stage = null
+def current_stage = null
 
 
 def mail() {
@@ -34,12 +34,13 @@ def mail() {
     emailext attachLog: true, body: body ,
                     compressLog: true, 
                     subject: "$env.JOB_NAME $env.BUILD_NUMBER: $currentBuild.result",
-                    to: emailextrecipients([[$class: 'UpstreamComitterRecipientProvider'],
+                    /*to: emailextrecipients([[$class: 'UpstreamComitterRecipientProvider'],
                                             [$class: 'FailingTestSuspectsRecipientProvider'],
                                             [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
                                             [$class: 'CulpritsRecipientProvider'],
                                             [$class: 'DevelopersRecipientProvider'], 
-                                            [$class: 'RequesterRecipientProvider']])   
+                                            [$class: 'RequesterRecipientProvider']])*/
+					to: emailextrecipients('lakhtenkov@gmail.com')
 }
 
 node{
