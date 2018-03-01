@@ -38,7 +38,7 @@ node{
 				println ("Push stage")
 				sh 'git tag -a ${env.BUILD_NUMBER} -m "backup ${env.BUILD_NUMBER}"'
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
-					credentialsId: 'MyID', 
+					credentialsId: 'github.Lakhtenkov-iv', 
 					usernameVariable: 'GIT_USERNAME', 
 					passwordVariable: 'GIT_PASSWORD']]) {    
 						sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags')
