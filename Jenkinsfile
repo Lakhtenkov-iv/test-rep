@@ -51,7 +51,7 @@ node{
 			current_stage = 'PREPARATION'
 			try {
 				step([$class: 'WsCleanup'])
-				git url: "https://${backupRepository}", credentialsId: 'github.Lakhtenkov-iv', branch: branch
+				//git url: "https://${backupRepository}", credentialsId: 'github.Lakhtenkov-iv', branch: branch
 			}
 			catch (Exception error){
 				println ("PREPARATION Failed")
@@ -68,7 +68,7 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
+					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* $HOME/.mw/settings.xml
 					du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
@@ -108,6 +108,5 @@ node{
 		if  (currentBuild.result != 'SUCCESS') {
 			mail()
 		}
-		mail()
 	}
 }
