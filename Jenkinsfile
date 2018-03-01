@@ -31,7 +31,6 @@ def mail() {
             <pre>$log</pre>
         """
     }
-    def body = null
     emailext attachLog: true, body: body ,
                     compressLog: true, 
                     subject: "$env.JOB_NAME $env.BUILD_NUMBER: $currentBuild.result",
