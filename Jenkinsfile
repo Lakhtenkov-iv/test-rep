@@ -36,12 +36,12 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			try {
 				println ("Push stage")
-				sh 'git tag -a ${env.BUILD_NUMBER} -m "backup ${env.BUILD_NUMBER}"'
+				sh "git tag -a ${env.BUILD_NUMBER} -m 'backup ${env.BUILD_NUMBER}'"
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
 					credentialsId: 'github.Lakhtenkov-iv', 
 					usernameVariable: 'GIT_USERNAME', 
 					passwordVariable: 'GIT_PASSWORD']]) {    
-						sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags')
+						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")
 				}
 			}
 			catch (Exception e){
