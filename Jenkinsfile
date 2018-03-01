@@ -8,13 +8,13 @@ def current_stage = null
 
 
 def mail() {
-    def causes = currentBuild.rawBuild.getCauses()
+    /*def causes = currentBuild.rawBuild.getCauses()
 
     if (!causes.isEmpty()) {
         cause = causes[0].getShortDescription()
     }
     
-    causes = null
+    causes = null*/
     def log = currentBuild.rawBuild.getLog(40).join('\n')
     def body = """
                     <p>Build $env.BUILD_NUMBER ran on $env.NODE_NAME and ended with $currentBuild.result .
@@ -105,5 +105,6 @@ node{
 		if  (currentBuild.result != 'SUCCESS') {
 			mail()
 		}
+		mail()
 	}
 }
