@@ -27,7 +27,7 @@ def mail() {
         body = body + """
             <p><b>Failed on stage</b>: $current_stage</p>
             <h2>Last lines of output:</h2>
-            <pre>${log]</pre>
+            <pre>${log}</pre>
         """
     }
     
