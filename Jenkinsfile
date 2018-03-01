@@ -102,6 +102,6 @@ node{
 		if (!currentBuild.result){
             currentBuild.result=state
         }
-		mail()
+		//mail()
 	}
 }
