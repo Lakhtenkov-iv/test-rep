@@ -26,6 +26,7 @@ node{
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
 					tar --exclude='./plugins/*' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
+                                        du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
 			catch (Exception e){
