@@ -95,8 +95,8 @@ node{
 					credentialsId: git_credentials, 
 					usernameVariable: 'GIT_USERNAME', 
 					passwordVariable: 'GIT_PASSWORD']]) {    
-						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")*/
-				}
+						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")
+				}*/
 			}
 			catch (Exception error){
 				state ='FAILURE'
