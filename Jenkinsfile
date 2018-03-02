@@ -65,7 +65,14 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* 
+					tar --exclude='./plugins/*'  --exclude='./jobs' --exclude='./caches' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
+                                        for i in `ls -d jobs/*/`; do
+	                                    for j in `ls -d ${i}/builds/*/`; do
+		                               if (cat ${j}/build.xml | grep -Po '(?<=<startTime>)[^<]*') > $(($(date +%s) - 2592000)) ; then 
+			                          tar --exclude='./jobs/*/*/*/archive' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ${i}/builds/${j}
+		                               fi
+	                                    done
+                                        done
 					du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
