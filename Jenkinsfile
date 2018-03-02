@@ -31,7 +31,7 @@ def mail() {
             <h2>Last lines of output:</h2>
             <pre>$log</pre>
         """
-    }*/
+    }
 
     emailext attachLog: true, body: body ,
                     compressLog: true, 
@@ -41,7 +41,7 @@ def mail() {
                                             [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
                                             [$class: 'CulpritsRecipientProvider'],
                                             [$class: 'DevelopersRecipientProvider'], 
-                                            [$class: 'RequesterRecipientProvider']])
+                                            [$class: 'RequesterRecipientProvider']])*/
 }
 
 node{
@@ -66,7 +66,7 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* 
+					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* 
 					du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
@@ -79,7 +79,7 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
-				def files = findFiles(glob: 'jenkins_backup_${timestamp}.tar.gz')
+				def files = findFiles(glob: '**/jenkins_backup_${timestamp}.tar.gz')
 				withAWS([[credentials = 'lakhtenkov_aws']]){
 					s3Upload(file:"${files[0].name}", bucket:"${bucketName}", path:"${bucketPath}")
 				}
@@ -109,7 +109,7 @@ node{
             currentBuild.result=state
         }
 		if  (currentBuild.result != 'SUCCESS') {
-			mail()
+			//mail()
 		}
 	}
 }
