@@ -87,17 +87,7 @@ node{
 						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:${bucketName}, path:${bucketPath})               
 				}
 			}
-				/*sh "tar -xzf jenkins_backup_${timestamp}.tar.gz"
-				sh "git add .; git commit -m 'test'"
-				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
-				sh "git push --tags"
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
-					credentialsId: git_credentials, 
-					usernameVariable: 'GIT_USERNAME', 
-					passwordVariable: 'GIT_PASSWORD']]) {    
-						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")
-				}*/
-			}
+
 			catch (Exception error){
 				state ='FAILURE'
 				println ("PUSH FAILED")
