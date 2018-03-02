@@ -80,4 +80,29 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '*.tar.gz')
-				//echo """${files[0].name} ${files[0].path} ${files[0].directory} ${fi
+				//echo """${files[0].name} ${files[0].path} ${files[0].directory} ${files[0].length} ${files[0].lastModified}""" 
+				withAWS(credentials = "${awsCredentials}"){
+					s3Upload(file: "${files[0].name}", bucket: "${bucketName}")
+				}
+			}
+
+			catch (Exception error){
+				state ='FAILURE'
+				println ("PUSH FAILED")
+				throw error
+			}
+		}
+	}
+	catch (Exception error){
+        state ='FAILURE'
+		throw error
+	}
+	finally {
+		if (!currentBuild.result){
+            currentBuild.result=state
+        }
+		/*if  (currentBuild.result != 'SUCCESS') {
+			mail()
+		}*/
+	}
+}
