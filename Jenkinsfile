@@ -80,17 +80,9 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '**/jenkins_backup_${timestamp}.tar.gz')
-				withAWS([[credentials = 'lakhtenkov_aws']]){
+				withAWS(credentials = 'lakhtenkov_aws'){
 					s3Upload(file:"${files[0].name}", bucket:"${bucketName}")
 				}
-				
-				/*withCredentials([[
-					$class: 'AmazonWebServicesCredentialsBinding',
-					credentialsId: 'awsCredentials',
-					accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-					secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {             
-						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:${bucketName})               
-				}*/
 			}
 
 			catch (Exception error){
