@@ -79,13 +79,14 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
-				withCredentials([[
+				s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:${bucketName}, path:${bucketPath})
+				/*withCredentials([[
 					$class: 'AmazonWebServicesCredentialsBinding',
 					credentialsId: 'awsCredentials',
 					accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 					secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {             
 						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:${bucketName}, path:${bucketPath})               
-				}
+				}*/
 			}
 
 			catch (Exception error){
