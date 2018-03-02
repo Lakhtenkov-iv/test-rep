@@ -86,7 +86,6 @@ node{
 					s3Upload(file: "${files[0].name}", bucket: "${bucketName}")
 				}
 			}
-
 			catch (Exception error){
 				state ='FAILURE'
 				println ("PUSH FAILED")
