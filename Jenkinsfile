@@ -79,7 +79,11 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
-				s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:${bucketName}, path:${bucketPath})
+				file = findFiles(glob: 'jenkins_backup_${timestamp}.tar.gz')
+				withAWS([[credentials = 'lakhtenkov_aws']]){
+					s3Upload(file:"${file}", bucket:"${bucketName}', path:"${bucketPath}")
+				}
+				
 				/*withCredentials([[
 					$class: 'AmazonWebServicesCredentialsBinding',
 					credentialsId: 'awsCredentials',
