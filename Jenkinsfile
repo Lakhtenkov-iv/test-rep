@@ -5,11 +5,11 @@ def bucketName = 'ilakhtenkov-jenkins-backup'
 def timestamp = new Date().format( 'dd-MM-yyyy_HH-mm' )
 def state = 'SUCCESS'
 def current_stage = null
-def body = null
 
-def mail() {
+
+/*def mail() {
 	
-    /*def causes = currentBuild.rawBuild.getCauses()
+    def causes = currentBuild.rawBuild.getCauses()
 
     if (!causes.isEmpty()) {
         cause = causes[0].getShortDescription()
@@ -41,8 +41,8 @@ def mail() {
                                             [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
                                             [$class: 'CulpritsRecipientProvider'],
                                             [$class: 'DevelopersRecipientProvider'], 
-                                            [$class: 'RequesterRecipientProvider']])*/
-}
+                                            [$class: 'RequesterRecipientProvider']])
+}*/
 
 node{
 	try {
@@ -108,8 +108,8 @@ node{
 		if (!currentBuild.result){
             currentBuild.result=state
         }
-		if  (currentBuild.result != 'SUCCESS') {
-			//mail()
-		}
+		/*if  (currentBuild.result != 'SUCCESS') {
+			mail()
+		}*/
 	}
 }
