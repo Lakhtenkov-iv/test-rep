@@ -67,9 +67,9 @@ node{
 					done
 					tar --exclude='./plugins/*'  --exclude='./jobs' --exclude='./caches' --exclude='./backup' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./*
                                         for i in `ls -d jobs/*/`; do
-	                                    for j in `ls -d ${i}/builds/*/`; do
-		                               if (cat ${j}/build.xml | grep -Po '(?<=<startTime>)[^<]*') > $(($(date +%s) - 2592000)) ; then 
-			                          tar --exclude='./jobs/*/*/*/archive' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ${i}/builds/${j}
+	                                    for j in `ls -d \${i}/builds/*/`; do
+		                               if \$(cat \${j}/build.xml | grep -Po '(?<=<startTime>)[^<]*') > \$((\$(date +%s) - 2592000)) ; then 
+			                          tar --exclude='./jobs/*/*/*/archive' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz \${i}/builds/\${j}
 		                               fi
 	                                    done
                                         done
