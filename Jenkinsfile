@@ -80,10 +80,10 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '*.tar.gz')
-				echo """${files[0].name} ${files[0].path} ${files[0].directory} ${files[0].length} ${files[0].lastModified}""" 
-				/*withAWS(credentials = 'lakhtenkov_aws'){
+				//echo """${files[0].name} ${files[0].path} ${files[0].directory} ${files[0].length} ${files[0].lastModified}""" 
+				withAWS(credentials = 'lakhtenkov_aws'){
 					s3Upload(file:"${files[0].name}", bucket:"${bucketName}")
-				}*/
+				}
 			}
 
 			catch (Exception error){
