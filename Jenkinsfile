@@ -79,7 +79,7 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '*.tar.gz')
-				echo files[0].length
+				echo "${files[0].length}"
 				if (files[0].length > backupMaxSize) {
 					throw error
 				}
