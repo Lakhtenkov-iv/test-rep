@@ -84,8 +84,9 @@ node{
 					credentialsId: 'awsCredentials',
 					accessKeyVariable: 'AWS_ACCESS_KEY_ID',
 					secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {             
-						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:"${bucketName}, path:"${bucket_path}"                }
+						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:"${bucketName}, path:"${bucket_path}")               
 				}
+			}
 				/*sh "tar -xzf jenkins_backup_${timestamp}.tar.gz"
 				sh "git add .; git commit -m 'test'"
 				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
