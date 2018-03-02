@@ -1,14 +1,14 @@
 
-def backupRepository = 'github.com/Lakhtenkov-iv/test-rep.git'
-def git_credentials = 'github.Lakhtenkov-iv'
-def branch = 'master'
+def awsCredentials = 'aws-lakhtenkov'
+def bucketPath = "https://s3.amazonaws.com/ilakhtenkov-jenkins-backup/"
+def bucketName = 'ilakhtenkov-jenkins-backup'
 def timestamp = new Date().format( 'dd-MM-yyyy_HH-mm' )
 def state = 'SUCCESS'
 def current_stage = null
-
+def body = null
 
 def mail() {
-	def body = null
+	
     /*def causes = currentBuild.rawBuild.getCauses()
 
     if (!causes.isEmpty()) {
@@ -50,7 +50,6 @@ node{
 			current_stage = 'PREPARATION'
 			try {
 				step([$class: 'WsCleanup'])
-				//git url: "https://${backupRepository}", credentialsId: 'github.Lakhtenkov-iv', branch: branch
 			}
 			catch (Exception error){
 				println ("PREPARATION Failed")
@@ -67,7 +66,7 @@ node{
 					for i in `ls -d plugins/*/`; do
 						echo \"\$(cat \$i/META-INF/MANIFEST.MF | grep Short-Name | cut -d ' ' -f 2 | tr -d '\n\r'):\$(cat \$i/META-INF/MANIFEST.MF | grep Plugin-Version | cut -d ' ' -f 2 | tr -d '\n\r')\" >> installed_plugins.txt
 					done
-					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* $HOME/.mw/settings.xml
+					tar --exclude='./plugins/*' --exclude='./caches' --exclude='./war' --exclude='./workspace' -czf ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz ./* 
 					du -sh ${env.WORKSPACE}/jenkins_backup_${timestamp}.tar.gz
 				"""
 			}
@@ -80,13 +79,22 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
-				sh "git add jenkins_backup_${timestamp}.tar.gz; git commit -m 'test'"
+				withCredentials([[
+					$class: 'AmazonWebServicesCredentialsBinding',
+					credentialsId: 'awsCredentials',
+					accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+					secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {             
+						s3Upload(file:jenkins_backup_${timestamp}.tar.gz, bucket:"${bucketName}, path:"${bucket_path}"                }
+				}
+				/*sh "tar -xzf jenkins_backup_${timestamp}.tar.gz"
+				sh "git add .; git commit -m 'test'"
 				sh "git tag -a ${timestamp} -m 'backup ${timestamp}'"
+				sh "git push --tags"
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', 
 					credentialsId: git_credentials, 
 					usernameVariable: 'GIT_USERNAME', 
 					passwordVariable: 'GIT_PASSWORD']]) {    
-						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")
+						sh("git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${backupRepository} --tags")*/
 				}
 			}
 			catch (Exception error){
