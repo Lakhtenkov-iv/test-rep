@@ -79,10 +79,6 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '*.tar.gz')
-				echo "${files[0].length}"
-				if (files[0].length > backupMaxSize) {
-					throw error
-				}
 				withAWS(credentials: "${awsCredentials}"){
 					s3Upload(file: "${files[0].name}", bucket: "${bucketName}", path: "${files[0].name}")
 				}
