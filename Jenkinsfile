@@ -79,9 +79,9 @@ node{
 		stage ('PUSH TO REPOSITORY'){
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
-				file = findFiles(glob: 'jenkins_backup_${timestamp}.tar.gz')
+				def files = findFiles(glob: '**/jenkins_backup_${timestamp}.tar.gz')
 				withAWS([[credentials = 'lakhtenkov_aws']]){
-					s3Upload(file:"${file}", bucket:"${bucketName}', path:"${bucketPath}")
+					s3Upload(file:"${files[0].name}", bucket:"${bucketName}', path:"${bucketPath}")
 				}
 				
 				/*withCredentials([[
