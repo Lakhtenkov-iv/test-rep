@@ -81,7 +81,7 @@ node{
 			try {
 				def files = findFiles(glob: 'jenkins_backup_${timestamp}.tar.gz')
 				withAWS([[credentials = 'lakhtenkov_aws']]){
-					s3Upload(file:"${files[0].name}", bucket:"${bucketName}', path:"${bucketPath}")
+					s3Upload(file:"${files[0].name}", bucket:"${bucketName}", path:"${bucketPath}")
 				}
 				
 				/*withCredentials([[
