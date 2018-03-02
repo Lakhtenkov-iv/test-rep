@@ -1,9 +1,46 @@
 def awsCredentials = 'lakhtenkov_aws'
-def bucketPath = "https://s3.amazonaws.com/ilakhtenkov-jenkins-backup/"
 def bucketName = 'ilakhtenkov-jenkins-backup'
 def timestamp = new Date().format( 'dd-MM-yyyy_HH-mm' )
 def state = 'SUCCESS'
 def current_stage = null
+
+def mail() {
+	def body = null
+    def causes = currentBuild.rawBuild.getCauses()
+
+    if (!causes.isEmpty()) {
+        cause = causes[0].getShortDescription()
+    }
+    
+    causes = null
+    def log = currentBuild.rawBuild.getLog(40).join('\n')
+	
+    body = """
+                    <p>Build $env.BUILD_NUMBER ran on $env.NODE_NAME and ended with $currentBuild.result .
+                    </p>
+                    <p><b>Build trigger</b>: $cause</p>
+                    <p><b> Check response code</b>: $response </p>
+                    <p>See: <a href="$env.BUILD_URL">$env.BUILD_URL</a></p>
+                """
+	
+    if  (currentBuild.result != 'SUCCESS') {
+        body = body + """
+            <p><b>Failed on stage</b>: $current_stage</p>
+            <h2>Last lines of output:</h2>
+            <pre>$log</pre>
+        """
+    }
+
+    emailext attachLog: true, body: body ,
+                    compressLog: true, 
+                    subject: "$env.JOB_NAME $env.BUILD_NUMBER: $currentBuild.result",
+                    to: emailextrecipients([[$class: 'UpstreamComitterRecipientProvider'],
+                                            [$class: 'FailingTestSuspectsRecipientProvider'],
+                                            [$class: 'FirstFailingBuildSuspectsRecipientProvider'],
+                                            [$class: 'CulpritsRecipientProvider'],
+                                            [$class: 'DevelopersRecipientProvider'], 
+                                            [$class: 'RequesterRecipientProvider']])
+}
 
 node{
 	try {
@@ -41,7 +78,6 @@ node{
 			current_stage = 'PUSH TO REPOSITORY'
 			try {
 				def files = findFiles(glob: '*.tar.gz')
-				//echo """${files[0].name} ${files[0].path} ${files[0].directory} ${files[0].length} ${files[0].lastModified}""" 
 				withAWS(credentials: "${awsCredentials}"){
 					s3Upload(file: "${files[0].name}", bucket: "${bucketName}", path: "${files[0].name}")
 				}
@@ -60,6 +96,9 @@ node{
 	finally {
 		if (!currentBuild.result){
 			currentBuild.result=state
+		}
+		if  (currentBuild.result != 'SUCCESS') {
+			mail()
 		}
 	}
 }
