@@ -45,7 +45,7 @@ def mail() {
 node{
     properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
     parameters {
-        stringParam(defaultValue: 'test', description: '', name: awsCredentials)
+        string(defaultValue: 'aws-lakhtenkov', description: '', name: awsCredentials)
     }
     try {
         stage('PREPARATION') {
