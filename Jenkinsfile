@@ -44,9 +44,7 @@ def mail() {
 }
 
 node{
-        options {
-		properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
-	}
+        properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', numToKeepStr: '5']]])
 	try {
 		stage('PREPARATION') {
 			current_stage = 'PREPARATION'
